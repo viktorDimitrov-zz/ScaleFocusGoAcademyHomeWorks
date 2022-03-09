@@ -31,6 +31,8 @@ type Deck struct {
 	cards []Card
 }
 
+type CardComparator func(cOne Card, cTwo Card) int
+
 func main() {
 
 	deck := NewDeck()
@@ -67,6 +69,10 @@ func main() {
 		fmt.Printf("You take card: %s-%s\n", returnRealValue(c.value), returnRealSuit(c.suit))
 	}
 	fmt.Println(deck)
+
+	max := maxCard(deck.cards, compareTwoCards)
+	fmt.Println(max)
+
 }
 
 //Lection 7 Task1
@@ -110,7 +116,21 @@ func (d *Deck) Deal() (*Card, error) {
 	}
 }
 
-//Lection 5 Task1
+//Lection7 task2
+
+func maxCard(cards []Card, comparatorFunc CardComparator) Card {
+	// use comparatorFunc here to find the maximum ...
+	maxCard := cards[0]
+
+	for _, c := range cards {
+		comparatorFunc = compareTwoCards
+		if comparatorFunc(c, maxCard) == 1 {
+			maxCard = c
+		}
+	}
+	return maxCard
+
+}
 
 func compareTwoCards(card1 Card, card2 Card) int {
 	if card1.value > card2.value || ((card1.value == card2.value) && (card1.suit > card2.suit)) {
@@ -123,19 +143,6 @@ func compareTwoCards(card1 Card, card2 Card) int {
 	}
 }
 
-//Lection 5 task2
-
-func findMaxCard(cards []Card) Card {
-	// use compareCards here to find the maximum ...
-	var maxCard Card = cards[0]
-
-	for _, v := range cards {
-		if compareTwoCards(v, maxCard) == 1 {
-			maxCard = v
-		}
-	}
-	return maxCard
-}
 
 func printTwoCards(c1v Card, c2v Card) {
 	fmt.Printf("1 card--> %s %s\n", returnRealValue(c1v.value), returnRealSuit(c1v.suit))
