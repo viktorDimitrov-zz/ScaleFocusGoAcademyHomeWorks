@@ -28,7 +28,7 @@ type Card struct {
 }
 
 type Deck struct {
-	cards []Card
+	cards []Card  
 }
 
 type CardComparator func(cOne Card, cTwo Card) int
@@ -123,7 +123,7 @@ func maxCard(cards []Card, comparatorFunc CardComparator) Card {
 	maxCard := cards[0]
 
 	for _, c := range cards {
-		comparatorFunc = compareTwoCards
+		//comparatorFunc = compareTwoCards
 		if comparatorFunc(c, maxCard) == 1 {
 			maxCard = c
 		}
