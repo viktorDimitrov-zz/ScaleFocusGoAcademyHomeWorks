@@ -69,6 +69,6 @@ func topStoriesHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/top", topStoriesHandler)
-	http.ListenAndServe("9000", mux)
+	http.ListenAndServe(":9000", mux)
 
 }
