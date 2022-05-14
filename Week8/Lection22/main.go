@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	//"fmt"
-	"main/hwNikola/story"
+	"main/story"
 	"net/http"
 )
 
