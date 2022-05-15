@@ -42,7 +42,7 @@ func TestTopStoriesIds(t *testing.T) {
 		},
 	}
 
-	router.Handle("/v0/topstories.json", handleTopStories(ids))
+	//router.Handle("/v0/topstories.json", handleTopStories(ids))
 	router.Handle("/v0/item", handleGetStory(stories))
 	mockServer := httptest.NewServer(router)
 

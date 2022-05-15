@@ -19,7 +19,6 @@ type Story struct {
 }
 
 func NewStoryService(url string) *StoryService {
-
 	return &StoryService{urlBase: url}
 }
 
@@ -78,5 +77,4 @@ func (ss *StoryService) GetStoryById(id int) Story {
 	json.NewDecoder(resp.Body).Decode(&st)
 	//fmt.Println(st)
 	return st
-
 }

@@ -9,6 +9,7 @@ import (
 
 func HandleTopStories() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		if r.Method != http.MethodGet {
 			http.Error(w, "Bad request", http.StatusBadRequest)
 			return
@@ -17,10 +18,10 @@ func HandleTopStories() http.HandlerFunc {
 		//fetch top 10
 		ss := story.NewStoryService("https://hacker-news.firebaseio.com")
 		ids := ss.GetTopStoriesIds()
-		stList := ss.GetStoriesByIds(ids)
 
+		stList := ss.GetStoriesByIds(ids)
 		json.NewEncoder(w).Encode(stList)
-		return
+		//return
 		//fmt.Println(stList)
 		//fetch scores for top ten
 
