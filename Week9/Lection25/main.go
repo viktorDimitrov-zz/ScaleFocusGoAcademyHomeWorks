@@ -1,31 +1,23 @@
 package main
 
 import (
-	"encoding/json"
-	//"fmt"
-	"main/story"
+	"database/sql"
+	"log"
+	handlers "main/handlers"
+	repository "main/repository"
 	"net/http"
+
+	_ "modernc.org/sqlite"
 )
-
-func HandleTopStories() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		if r.Method != http.MethodGet {
-			http.Error(w, "Bad request", http.StatusBadRequest)
-			return
-		}
-
-		//fetch top 10
-		ss := story.NewStoryService("https://hacker-news.firebaseio.com")
-		stList := ss.GetStories(10)
-		json.NewEncoder(w).Encode(stList)
-		
-	}
-}
 
 func main() {
 	router := http.NewServeMux()
-	router.Handle("/api/top", HandleTopStories()) //return top 10
+	db, err := sql.Open("sqlite", "dbHN.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+	repo := repository.NewRepository(db)
+	router.Handle("/api/top", handlers.HandleTopStories(repo)) //return top 10
 	//router.Handle("top", nil)                    //view html template
 	//log.Println("started")
 	http.ListenAndServe(":8000", router)
