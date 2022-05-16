@@ -22,7 +22,7 @@ func NewStoryService(url string) *StoryService {
 	return &StoryService{urlBase: url}
 }
 
-func (ss *StoryService) GetTopStoriesIds() []int {
+func (ss *StoryService) getTopStoriesIds(maxCount int) []int {
 	req, err := http.NewRequest("GET", ss.urlBase+"/v0/topstories.json", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -35,13 +35,15 @@ func (ss *StoryService) GetTopStoriesIds() []int {
 	var ids []int
 	json.NewDecoder(resp.Body).Decode(&ids)
 	//fmt.Println(ids)
-	return ids[:10]
+	//defence
+	return ids[:maxCount]
 }
 
-func (ss *StoryService) GetStoriesByIds(ids []int) []Story {
+func (ss *StoryService) GetStories(maxCount int) []Story {
+	ids := ss.getTopStoriesIds(maxCount)
 	dataChan := make(chan Story, len(ids))
-
 	wg := sync.WaitGroup{}
+
 	for _, id := range ids {
 		wg.Add(1)
 		go func(id int) {

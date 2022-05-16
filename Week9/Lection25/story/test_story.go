@@ -32,8 +32,26 @@ func handleGetStory(stories []Story) http.HandlerFunc {
 }
 
 func TestTopStoriesIds(t *testing.T) {
+
 	router := http.NewServeMux()
-	ids := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	ids := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+	router.Handle("/v0/topstories.json", handleTopStories(ids))
+	mockServer := httptest.NewServer(router)
+
+	wont := ids[:10]
+	//Act
+	ss := NewStoryService(mockServer.URL)
+	got := ss.getTopStoriesIds(10)
+
+	//Asssert
+	if !reflect.DeepEqual(got, wont) {
+		t.Fatalf("Get %v,want %v", got, wont)
+	}
+}
+
+func TestTopStories(t *testing.T) {
+	router := http.NewServeMux()
+	ids := []int{10}
 	stories := []Story{
 		{
 			Id:    10,
@@ -41,15 +59,14 @@ func TestTopStoriesIds(t *testing.T) {
 			Score: 15,
 		},
 	}
-
-	//router.Handle("/v0/topstories.json", handleTopStories(ids))
+	router.Handle("/v0/topstories.json", handleTopStories(ids))
 	router.Handle("/v0/item", handleGetStory(stories))
 	mockServer := httptest.NewServer(router)
 
 	wont := stories
 	//Act
 	ss := NewStoryService(mockServer.URL)
-	got := ss.GetStoriesByIds(ids)
+	got := ss.GetStories(1)
 
 	//Asssert
 	if !reflect.DeepEqual(got, wont) {

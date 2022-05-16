@@ -17,15 +17,9 @@ func HandleTopStories() http.HandlerFunc {
 
 		//fetch top 10
 		ss := story.NewStoryService("https://hacker-news.firebaseio.com")
-		ids := ss.GetTopStoriesIds()
-
-		stList := ss.GetStoriesByIds(ids)
+		stList := ss.GetStories(10)
 		json.NewEncoder(w).Encode(stList)
-		//return
-		//fmt.Println(stList)
-		//fetch scores for top ten
-
-		//caling item
+		
 	}
 }
 
