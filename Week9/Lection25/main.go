@@ -19,6 +19,6 @@ func main() {
 	repo := repository.NewRepository(db)
 	router.Handle("/api/top", handlers.HandleTopStories(repo)) //return top 10
 	//router.Handle("top", nil)                    //view html template
-	//log.Println("started")
+	log.Println("started")
 	http.ListenAndServe(":8000", router)
 }
