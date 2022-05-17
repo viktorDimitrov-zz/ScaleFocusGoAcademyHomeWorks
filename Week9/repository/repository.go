@@ -17,9 +17,12 @@ func NewRepository(db *sql.DB) *Repository {
 
 func (rp *Repository) GetLastStoryTimeStamp() time.Time {
 	query := "select s.timeStamp  from stories s order by s.timeStamp DESC  LIMIT 1"
-	var tmstmp int64
-	rp.db.QueryRow(query).Scan(&tmstmp)
-	return time.UnixMilli(tmstmp)
+	var tmstmp time.Time
+	err := rp.db.QueryRow(query).Scan(&tmstmp)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tmstmp
 }
 
 func (rp *Repository) GetStories() []story.Story {
@@ -42,6 +45,9 @@ func (rp *Repository) GetStories() []story.Story {
 	return stories
 }
 
-//GetLastTimeStamp()
-
-//GetStories()
+func (rp *Repository) SaveStories(sList []story.Story) {
+	insertQuery := "insert into stories (storyId,title,score) values(?,?,?)"
+	for _, s := range sList {
+		rp.db.Exec(insertQuery, s.Id, s.Title, s.Score)
+	}
+}
