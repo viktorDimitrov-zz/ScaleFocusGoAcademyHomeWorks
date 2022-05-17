@@ -8,6 +8,14 @@ import (
 	"testing"
 )
 
+type FakeStorage struct {
+	SavedStories []Story
+}
+
+func (f *FakeStorage) SaveStories(sList []Story) {
+	f.SavedStories = sList
+}
+
 func handleTopStories(ids []int) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(ids)
@@ -40,7 +48,7 @@ func TestTopStoriesIds(t *testing.T) {
 
 	wont := ids[:10]
 	//Act
-	ss := NewStoryService(mockServer.URL)
+	ss := NewStoryService(mockServer.URL, &FakeStorage{})
 	got := ss.getTopStoriesIds(10)
 
 	//Asssert
@@ -65,11 +73,16 @@ func TestTopStories(t *testing.T) {
 
 	wont := stories
 	//Act
-	ss := NewStoryService(mockServer.URL)
+	fs := &FakeStorage{}
+	ss := NewStoryService(mockServer.URL, fs)
 	got := ss.GetStories(1)
 
 	//Asssert
+
 	if !reflect.DeepEqual(got, wont) {
 		t.Fatalf("Get %v,want %v", got, wont)
+	}
+	if !reflect.DeepEqual(got, fs.SavedStories) {
+		t.Fatalf("Get %v,want %v", fs.SavedStories, got)
 	}
 }

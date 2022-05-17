@@ -10,6 +10,7 @@ import (
 
 type StoryService struct {
 	urlBase string
+	repo    Repository
 }
 
 type Story struct {
@@ -18,8 +19,12 @@ type Story struct {
 	Score int    `json:"score"`
 }
 
-func NewStoryService(url string) *StoryService {
-	return &StoryService{urlBase: url}
+type Repository interface {
+	SaveStories(sList []Story)
+}
+
+func NewStoryService(url string, repo Repository) *StoryService {
+	return &StoryService{urlBase: url, repo: repo}
 }
 
 func (ss *StoryService) getTopStoriesIds(maxCount int) []int {
@@ -60,6 +65,9 @@ func (ss *StoryService) GetStories(maxCount int) []Story {
 		result = append(result, v)
 	}
 
+	//storage Save to DB
+
+	ss.repo.SaveStories(result)
 	return result
 }
 
