@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"log"
 	"testing"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 
 const (
 	createStoryTable = "CREATE table if not exists stories(storyId int primary key, title text, score int, timeStamp datetime default current_timestamp)"
-	insertStory      = "insert into stories (storyId,title,score) values(?,?,?,?)"
+	insertStory      = "insert into stories (storyId,title,score,timeStamp) values(?,?,?,?)"
 )
 
 func TestLastStoryTimeStamp(t *testing.T) {
@@ -33,9 +34,15 @@ func TestLastStoryTimeStamp(t *testing.T) {
 	}
 
 	wantedTime := time.Now().Add(time.Hour)
-	mockDb.Exec(insertStory, 0, "Unit test", 15, wantedTime)
+	_, err = mockDb.Exec(insertStory, 0, "Unit test", 15, wantedTime)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	mockDb.Exec(insertStory, 1, "Unit test1", 15, time.Now().Add(-time.Hour))
+	_, err = mockDb.Exec(insertStory, 1, "Unit test1", 15, time.Now().Add(-time.Hour))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	result = repo.GetLastStoryTimeStamp()
 	if result == wantedTime {
